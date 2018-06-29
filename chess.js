@@ -19,33 +19,32 @@ function createBoard() {
   }
 }
 class ChessPosition {
-  constructor(pos_x, pos_y, status, source, piecesId) {
+  constructor(pos_x, pos_y, status, source, piecesId, teamColor) {
     this.pos_x = pos_x;
     this.pos_y = pos_y;
     this.status = status;
     this.source = source;
     this.piecesId = piecesId;
+    this.teamColor = teamColor;
   }
 }
-console.log(wGroupPawn);
 class pieceStatus extends ChessPosition {
-  constructor(pos_x, pos_y, status, source, piecesId) {
-    super(pos_x, pos_y, status, source, piecesId);
+  constructor(pos_x, pos_y, status, source, piecesId, teamColor) {
+    super(pos_x, pos_y, status, source, piecesId, teamColor);
   }
 }
 var idList = ["ro", "kn", "bi", "qu", "ki", "bi", "kn", "ro"];
 var wGroupPawn = [];
 for (var i = 0; i < 8; i++) {
-  var temp = new pieceStatus(1, list[i], "true", "images/white-pawn0.svg", "wp" + i);
-  var btemp = new pieceStatus(6, list[i], "true", "images/black-pawn.svg", "bp" + i);
-  var dtemp = new pieceStatus(7, list[i], "true", "images/img" + i + ".svg", "b" + idList[i] + i);
-  var qtemp = new pieceStatus(0, list[i], "true", "images/wimg" + i + ".svg", "w" + idList[i] + i);
+  var temp = new pieceStatus(1, list[i], "true", "images/white-pawn0.svg", "wp" + i, "team1");
+  var btemp = new pieceStatus(6, list[i], "true", "images/black-pawn.svg", "bp" + i, "team1");
+  var dtemp = new pieceStatus(7, list[i], "true", "images/img" + i + ".svg", "b" + idList[i] + i, "team2");
+  var qtemp = new pieceStatus(0, list[i], "true", "images/wimg" + i + ".svg", "w" + idList[i] + i, "team2");
   wGroupPawn.push(temp);
   wGroupPawn.push(btemp);
   wGroupPawn.push(dtemp);
   wGroupPawn.push(qtemp);
 }
-console.log(wGroupPawn);
 createPieces();
 
 function createPieces() {
@@ -70,26 +69,81 @@ function showValidMove() {
   var tempId = this.id;
   let checkId = tempId.charAt(0) + tempId.charAt(1);
   var divId = this.parentNode.id;
+  // var divId = "44";
   if (checkId == "bp" || checkId == "wp") {
     if (tempId.charAt(0) == "w") {
       let cu = 1;
       for (let w = 0; w < num; w++) {
-        targetValidBox(divId.charAt(0) + (Number(divId.charAt(1)) + cu));
+        targetPawanValidBox(divId.charAt(0) + (Number(divId.charAt(1)) + cu));
         cu++;
       }
     } else {
       let cu = 1;
       for (let w = 0; w < num; w++) {
-        targetValidBox(divId.charAt(0) + (Number(divId.charAt(1)) - cu));
+        targetPawanValidBox(divId.charAt(0) + (Number(divId.charAt(1)) - cu));
         cu++;
       }
     }
   } else if ((checkId + "n") == "wkn" || (checkId + "n") == "bkn") {
-    console.log(tempId);
+    // for(let q=0;q<4;q++){
+    knightValidBox((Number(divId.charAt(0)) - 1), Number(divId.charAt(1)) + 2, divId);
+    knightValidBox((Number(divId.charAt(0)) + 1), Number(divId.charAt(1)) + 2, divId);
+    knightValidBox((Number(divId.charAt(0)) - 1), Number(divId.charAt(1) - 2), divId);
+    knightValidBox((Number(divId.charAt(0)) + 1), Number(divId.charAt(1) - 2), divId);
+    knightValidBox((Number(divId.charAt(0)) - 2), Number(divId.charAt(1)) + 1, divId);
+    knightValidBox((Number(divId.charAt(0)) - 2), Number(divId.charAt(1)) - 1, divId);
+    knightValidBox((Number(divId.charAt(0)) + 2), Number(divId.charAt(1)) - 1, divId);
+    knightValidBox((Number(divId.charAt(0)) + 2), Number(divId.charAt(1)) + 1, divId);
   }
 }
 
-function targetValidBox(divId) {
+function knightValidBox(a, b, piecId) {
+  if ((a >= 0) && (a <= 7) && (b >= 0) && (b <= 7)) {
+    let divId = a + "" + b;
+    // console.log(divId);
+    let chh = checEmptyNodes(divId, piecId);
+    // console.log(chh);
+    if (chh) {
+      let tragetDiv = document.getElementById(divId);
+      if (tragetDiv.classList.toggle("show-path")) {
+
+      }
+    }
+  }
+}
+
+function targetPawanValidBox(divId) {
   let tragetDiv = document.getElementById(divId);
-  if (tragetDiv.classList.toggle("show-path")) {}
+  if (tragetDiv.classList.toggle("show-path")) {
+
+  }
+}
+console.log(wGroupPawn);
+
+function checEmptyNodes(divId, piecId) {
+  let temp, temp2;
+  let condi1 = false;
+  for (var i = 0; i < wGroupPawn.length; i++) {
+    console.log((wGroupPawn[i].pos_x + wGroupPawn[i].pos_y));
+    if (divId == (wGroupPawn[i].pos_x + wGroupPawn[i].pos_y)) {
+      temp = wGroupPawn[i].teamColor;
+      condi1 = true;
+    }
+    if (piecId == (wGroupPawn[i].pos_x + wGroupPawn[i].pos_y)) {
+      temp2 = wGroupPawn[i].teamColor;
+    }
+  }
+  if (condi1 == true) 
+  {
+    if (temp != temp2) {
+      return true;
+    } else {
+      return false;
+    }
+  } 
+  else 
+  {
+    // console.log("ddddd");
+    return false;
+  }
 }
