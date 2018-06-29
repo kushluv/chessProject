@@ -18,3 +18,12 @@ margin: auto;
 img{
     width: 100%;
 }
+.blackBox{
+    background:#2c3e50;
+}
+.whiteBox{
+    background: #bdc3c7;
+}
+.show-path{
+background: rgb(151, 101, 245);
+}

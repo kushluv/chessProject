@@ -10,7 +10,9 @@ function createBoard() {
       var childDiv = document.createElement("div");
       childDiv.id = list[j] + i;
       if ((i + j) % 2 == 1) {
-        childDiv.setAttribute("style", "Background-color:#576574;");
+        childDiv.setAttribute("class", "blackBox");
+      } else {
+        childDiv.setAttribute("class", "whiteBox");
       }
       ParentDiv.appendChild(childDiv);
     }
@@ -25,19 +27,19 @@ class ChessPosition {
     this.piecesId = piecesId;
   }
 }
-
-class PawnStatus extends ChessPosition {
-  constructor(pos_x, pos_y, status, source,piecesId) {
-    super(pos_x, pos_y, status, source,piecesId);
+console.log(wGroupPawn);
+class pieceStatus extends ChessPosition {
+  constructor(pos_x, pos_y, status, source, piecesId) {
+    super(pos_x, pos_y, status, source, piecesId);
   }
 }
 var idList = ["ro", "kn", "bi", "qu", "ki", "bi", "kn", "ro"];
 var wGroupPawn = [];
 for (var i = 0; i < 8; i++) {
-  var temp = new PawnStatus(1, list[i], "true", "images/white-pawn0.svg", "wp" + i);
-  var btemp = new PawnStatus(6, list[i], "true", "images/black-pawn.svg", "bp" + i);
-  var dtemp = new PawnStatus(7, list[i], "true", "images/img" + i + ".svg", "b" + idList[i] + i);
-  var qtemp = new PawnStatus(0, list[i], "true", "images/wimg" + i + ".svg", "w" + idList[i] + i);
+  var temp = new pieceStatus(1, list[i], "true", "images/white-pawn0.svg", "wp" + i);
+  var btemp = new pieceStatus(6, list[i], "true", "images/black-pawn.svg", "bp" + i);
+  var dtemp = new pieceStatus(7, list[i], "true", "images/img" + i + ".svg", "b" + idList[i] + i);
+  var qtemp = new pieceStatus(0, list[i], "true", "images/wimg" + i + ".svg", "w" + idList[i] + i);
   wGroupPawn.push(temp);
   wGroupPawn.push(btemp);
   wGroupPawn.push(dtemp);
@@ -55,9 +57,39 @@ function createPieces() {
       wGroupPawn[k].pos_y + wGroupPawn[k].pos_x
     );
     var imgPieces = document.createElement("img");
-    imgPieces.id=wGroupPawn[k].piecesId;
+    imgPieces.id = wGroupPawn[k].piecesId;
     imgPieces.setAttribute("src", wGroupPawn[k].source);
     imgPieces.setAttribute("draggable", "true");
+    imgPieces.addEventListener("click", showValidMove);
     par_node.appendChild(imgPieces);
   }
+}
+var num = 2;
+
+function showValidMove() {
+  var tempId = this.id;
+  let checkId = tempId.charAt(0) + tempId.charAt(1);
+  var divId = this.parentNode.id;
+  if (checkId == "bp" || checkId == "wp") {
+    if (tempId.charAt(0) == "w") {
+      let cu = 1;
+      for (let w = 0; w < num; w++) {
+        targetValidBox(divId.charAt(0) + (Number(divId.charAt(1)) + cu));
+        cu++;
+      }
+    } else {
+      let cu = 1;
+      for (let w = 0; w < num; w++) {
+        targetValidBox(divId.charAt(0) + (Number(divId.charAt(1)) - cu));
+        cu++;
+      }
+    }
+  } else if ((checkId + "n") == "wkn" || (checkId + "n") == "bkn") {
+    console.log(tempId);
+  }
+}
+
+function targetValidBox(divId) {
+  let tragetDiv = document.getElementById(divId);
+  if (tragetDiv.classList.toggle("show-path")) {}
 }
